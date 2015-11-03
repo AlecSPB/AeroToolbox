@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aero Toolbox</string>
+    <string name="Mach">Mach</string>
+
+    <string name="p_ratio">P/Pt</string>
+    <string name="t_ratio">T/Tt</string>
+    <string name="a_ratio">A/A<sup>*</sup></string>
+    <string name="rho_ratio">\u03C1/\u03C1t</string>
+
+    <string name="Mach1">M1</string>
+    <string name="Mach2">M2</string>
+    <string name="t21_static_ratio">T2/T1</string>
+    <string name="p21_total_ratio">Pt2/Pt1</string>
+    <string name="p21_static_ratio">P2/P1</string>
+    <string name="p21_ts_ratio">Pt2/P1</string>
+    <string name="v21_ratio">V2/V1</string>
+    <string name="rho12_ratio">\u03C11/\u03C12</string>
+
+
+    <!--
+    <string name="p_ratio">P<sub>0</sub>/P</string>
+    <string name="t_ratio">T<sub>0</sub>/T</string>
+    <string name="rho_ratio">\u03C1<sub>0</sub>/\u03C1</string>
+    -->
+
+    <string-array name="density">
+        <item>kg/m<sup>3</sup></item>
+        <item>slug/ft<sup>3</sup></item>
+        <item>lbm/ft<sup>3</sup></item>
+    </string-array>
+    <string-array name="velocity">
+        <item>m/s</item>
+        <item>ft/s</item>
+        <item>in/s</item>
+    </string-array>
+    <string-array name="viscosity">
+        <item>Pa &#8226; s</item>
+        <item>lb &#8226; s/ft<sup>2</sup></item>
+    </string-array>
+    <string-array name="length">
+        <item>m</item>
+        <item>ft</item>
+        <item>in</item>
+    </string-array>
+    <string-array name="pressure">
+        <item>Pa</item>
+        <item>psi</item>
+        <item>psf</item>
+    </string-array>
+</resources>
