@@ -15,19 +15,16 @@
  */
 package com.example.android.aerotoolbox;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.text.Html;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import java.io.IOException;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity
         implements MenuFragment.OnHeadlineSelectedListener {
@@ -120,7 +117,7 @@ public class MainActivity extends FragmentActivity
         return M;
     }
 
-    private void SetMessage(int [] prefixes, int [] labels, double [] values, int title){
+    private void IsentropicSetMessage(int[] prefixes, int[] labels, double[] values, int title){
         String message;
         double M = values[0];
         TextView IsentropicTextView;
@@ -145,7 +142,7 @@ public class MainActivity extends FragmentActivity
         }
     }
 
-    private void ClearMessage(int [] labels, int title){
+    private void IsentropicClearMessage(int [] labels, int title){
         String message="";
         TextView IsentropicTextView;
 
@@ -157,7 +154,6 @@ public class MainActivity extends FragmentActivity
             IsentropicTextView.setText(message);
         }
     }
-
 
     public void IsentropicCalculate(View view) {
         int labels [] = {R.id.isentropic_mach_output, R.id.isentropic_pressure_output,
@@ -172,8 +168,6 @@ public class MainActivity extends FragmentActivity
         double M, p_ratio,t_ratio,rho_ratio,a_ratio;
         RadioButton radio_mach, radio_pressure, radio_temperature, radio_density, radio_area;
         EditText text;
-        text = (EditText) findViewById(R.id.reynold_density);
-        M=0; p_ratio=-1; t_ratio=-1; rho_ratio=-1; a_ratio=-1;
 
         try {
 
@@ -222,7 +216,7 @@ public class MainActivity extends FragmentActivity
                     t_ratio = 1 / (1 + M * M / 5);
                     p_ratio = Math.pow(t_ratio, 3.5);
                     rho_ratio = p_ratio / t_ratio;
-                    ClearMessage(labels2, title2);
+                    IsentropicClearMessage(labels2, title2);
                 }else{
                     double tol=1e-10; int max_it=100;
                     M=0;
@@ -237,7 +231,7 @@ public class MainActivity extends FragmentActivity
                     p_ratio2 = Math.pow(t_ratio2, 3.5);
                     rho_ratio2 = p_ratio2 / t_ratio2;
                     double values2 [] ={M2,p_ratio2,t_ratio2,rho_ratio2,a_ratio};
-                    SetMessage(prefixes, labels2, values2, title2);
+                    IsentropicSetMessage(prefixes, labels2, values2, title2);
                 }
 
             }
@@ -249,10 +243,10 @@ public class MainActivity extends FragmentActivity
             return;
         }
         double values [] ={M,p_ratio,t_ratio,rho_ratio,a_ratio};
-        SetMessage(prefixes, labels, values, title);
+        IsentropicSetMessage(prefixes, labels, values, title);
 
         if (!radio_area.isChecked()){
-            ClearMessage(labels2, title2);
+            IsentropicClearMessage(labels2, title2);
         }
     }
 
@@ -340,4 +334,185 @@ public class MainActivity extends FragmentActivity
         TextView ReynoldTextView = (TextView) findViewById(R.id.reynold_number_value);
         ReynoldTextView.setText(message);
     }
+
+    private double NewtownNormal_pt21(double M1, double pt21, double tol, int max_it){
+        double f, df, x1, t, M1sq;
+        M1sq=M1*M1;
+        for (int i=0; i<max_it;i++) {
+            f = Math.pow((6*M1sq)/(M1sq+5),3.5)*Math.pow(6/(7*M1sq-1),2.5)-pt21;
+            //PROBLEM HERE WITH  f or df;
+            df = 7/2*(6/(M1sq+5)-(6*M1sq)/Math.pow(M1sq+5,2))*Math.pow(6/(7*M1sq - 1),5/2)*Math.pow((6*M1sq)/(M1sq + 5),5/2)
+                    -105*Math.pow(6/(7*M1sq - 1),1.5)*Math.pow(6*M1sq/(M1sq + 5),3.5)/Math.pow(7*M1sq - 1,2);
+            x1 = M1sq-f/df;
+            t = Math.abs(M1sq-x1);
+            M1sq=x1;
+
+            if (t<tol) {
+                break;
+            }
+        }
+        return Math.sqrt(M1sq);
+    }
+    private double NewtownNormal_pt2p1(double M1, double pt2p1, double tol, int max_it){
+        double f, df, x1, t, M1sq;
+        //M1sq=10;
+        M1sq=M1*M1;
+        for (int i=0; i<max_it;i++) {
+            f = Math.pow((6*M1sq)/5,3.5)*Math.pow(6/(7*M1sq-1),2.5)-pt2p1;
+            df = 21/5*Math.pow(6*M1sq/5,2.5)*Math.pow(6/(7*M1sq - 1),2.5)
+                    -105*Math.pow(6*M1sq/5,3.5)*Math.pow(6/(7*M1sq - 1),1.5)/Math.pow(7*M1sq-1,2);
+            x1 = M1sq-f/df;
+            t = Math.abs(M1sq-x1);
+            M1sq=x1;
+            if (t<tol) {
+                break;
+            }
+        }
+        return Math.sqrt(M1sq);
+    }
+
+    public class NormalValues {
+        public double M1, M2, p21, pt21, pt2p1, t21, rho21;
+
+        // constructor
+        public NormalValues(double M1_in) {
+            double M1sq;
+            M1=M1_in;
+            M1sq=M1_in*M1_in;
+
+            M2=Math.sqrt((M1sq+5)/(7*M1sq-1));
+            p21=(7*M1sq-1)/6;
+            pt21=Math.pow((6*M1sq)/(M1sq+5),3.5)*Math.pow(6/(7*M1sq-1),2.5);
+            pt2p1=Math.pow((6*M1sq)/(5),3.5)*Math.pow(6/(7*M1sq-1),2.5);
+            t21=(7*M1sq-1)*(M1sq+5)/(36*M1sq);
+            rho21=(6*M1sq)/(M1sq+5);
+        }
+
+        //methods
+        public double [] values(){
+            double [] normal_values={M1,M2,p21,pt21,pt2p1,t21,rho21};
+            return normal_values;
+        }
+    }
+
+    public void ShowToast(CharSequence text){
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
+
+    public void NormalCalculate(View view) {
+        double values[];
+        double M1, M2, p21, pt21, pt2p1, t21, rho21;
+        NormalValues OutputValues;
+        RadioButton radio_m1, radio_m2, radio_p21, radio_pt21, radio_pt2p1, radio_t21, radio_rho21;
+        EditText text;
+
+        int labels[] = {R.id.normal_m1_output, R.id.normal_m2_output, R.id.normal_p21_output,
+                R.id.normal_pt21_output, R.id.normal_pt2p1_output, R.id.normal_t21_output, R.id.normal_rho21_output};
+        String prefixes[] = getResources().getStringArray(R.array.normal_array);
+        int title = R.id.normal_label;
+
+        try {
+            radio_m1 = (RadioButton) findViewById(R.id.normal_radio_m1);
+            radio_m2 = (RadioButton) findViewById(R.id.normal_radio_m2);
+            radio_p21 = (RadioButton) findViewById(R.id.normal_radio_p21);
+            radio_pt21 = (RadioButton) findViewById(R.id.normal_radio_pt21);
+            radio_pt2p1 = (RadioButton) findViewById(R.id.normal_radio_pt2p1);
+            radio_t21 = (RadioButton) findViewById(R.id.normal_radio_t21);
+            radio_rho21 = (RadioButton) findViewById(R.id.normal_radio_rho21);
+
+            if (radio_m1.isChecked()) {
+                text = (EditText) findViewById(R.id.normal_m1_input);
+                M1 = Double.parseDouble(text.getText().toString().trim());
+                if (M1<1){
+                    ShowToast("Upstream Mach number must be greater than 1");
+                    return;
+                }
+            }
+            else if (radio_m2.isChecked()) {
+                text = (EditText) findViewById(R.id.normal_m2_input);
+                M2 = Double.parseDouble(text.getText().toString().trim());
+                if (M2>1){
+                    ShowToast("Downstream Mach number must be less than 1");
+                    return;
+                }
+                M1=Math.sqrt((M2*M2 + 5)/(7*M2*M2 - 1));
+            }
+            else if (radio_p21.isChecked()) {
+                text = (EditText) findViewById(R.id.normal_p21_input);
+                p21 = Double.parseDouble(text.getText().toString().trim());
+                if (p21<1){
+                    ShowToast("Static pressure ratio must be greater than 1");
+                    return;
+                }
+                M1=Math.sqrt((6*p21+1)/7);
+            }
+            else if (radio_pt21.isChecked()) {
+                text = (EditText) findViewById(R.id.normal_pt21_input);
+                pt21 = Double.parseDouble(text.getText().toString().trim());
+                if (pt21>1){
+                    ShowToast("Total pressure ratio must be less than 1");
+                    return;
+                }
+                M1=NewtownNormal_pt21(1.01,pt21,1e-10,100);
+            }
+            else if (radio_pt2p1.isChecked()) {
+                text = (EditText) findViewById(R.id.normal_pt2p1_input);
+                pt2p1 = Double.parseDouble(text.getText().toString().trim());
+                if (pt2p1<1.892929159){
+                    ShowToast("Value must be greater than Pt/P for sonic flow, ~1.8929");
+                    return;
+                }
+                M1=NewtownNormal_pt2p1(1.01,pt2p1,1e-10,40);
+            }
+            else if (radio_t21.isChecked()) {
+                text = (EditText) findViewById(R.id.normal_t21_input);
+                t21 = Double.parseDouble(text.getText().toString().trim());
+                if (t21<1){
+                    ShowToast("Static temperature ratio must be greater than 1");
+                    return;
+                }
+                M1=Math.sqrt((18*t21+6*Math.sqrt(9*t21*t21-17*t21 + 9)-17)/7);
+            }
+            else if (radio_rho21.isChecked()) {
+                text = (EditText) findViewById(R.id.normal_rho21_input);
+                rho21 = Double.parseDouble(text.getText().toString().trim());
+                if (rho21<1){
+                    ShowToast("density ratio must be greater than 1");
+                    return;
+                }
+                if (rho21>=6){
+                    ShowToast("Theoretical limit of density ratio is 6");
+                    return;
+                }
+                M1=Math.sqrt(-(5*rho21)/(rho21 - 6));
+            }
+            else{
+                return; // Nothing checked
+            }
+
+            OutputValues = new NormalValues(M1);
+            values=OutputValues.values();
+            NormalSetMessage(prefixes, labels, values, title);
+        }
+
+        catch (NumberFormatException e){
+            return;
+        }
+
+    }
+    private void NormalSetMessage(String[] prefixes, int[] labels, double[] values, int title){
+        String message;
+        TextView CurrentTextView;
+
+        for(int i=0;i<7;i++) {
+            message = prefixes[i] + ": " + String.format("%1$,.9f", values[i]);
+            CurrentTextView = (TextView) findViewById(labels[i]);
+            CurrentTextView.setText(message);
+        }
+
+    }
+
 }

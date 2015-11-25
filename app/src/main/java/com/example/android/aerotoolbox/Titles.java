@@ -20,6 +20,8 @@ public class Titles {
     static String[] Headlines = {
             "Reynolds Number",
             "Isentropic Flow",
-            "Normal Shock"
+            "Normal Shock",
+            "Oblique Shock",
+            "Prandtl-Meyer Expansion"
     };
 }

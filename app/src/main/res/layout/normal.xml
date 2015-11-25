@@ -51,38 +51,37 @@ limitations under the License.
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/radio_mach"
+                        android:id="@+id/normal_radio_m1"
                         android:layout_weight="1"/>
-
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/radio_pressure"
+                        android:id="@+id/normal_radio_m2"
                         android:layout_weight="1" />
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/radio_temperature"
+                        android:id="@+id/normal_radio_p21"
                         android:layout_weight="1" />
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/radio_density"
+                        android:id="@+id/normal_radio_pt21"
                         android:layout_weight="1" />
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/radio_area"
+                        android:id="@+id/normal_radio_pt2p1"
                         android:layout_weight="1" />
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/radio_density2"
+                        android:id="@+id/normal_radio_t21"
                         android:layout_weight="1" />
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/radio_area2"
+                        android:id="@+id/normal_radio_rho21"
                         android:layout_weight="1" />
                 </RadioGroup>
                 <LinearLayout
@@ -125,10 +124,10 @@ limitations under the License.
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="@string/p21_ts_ratio"
-                        android:textSize="16sp"
                         android:gravity="bottom"
-                        android:layout_marginBottom="8dp"/>
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/p21_ts_ratio"
+                        android:textSize="16sp"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -156,49 +155,49 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
-                        android:id="@+id/normal_mach_input"
+                        android:id="@+id/normal_m1_input"
                         android:layout_gravity="right" />
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
-                        android:id="@+id/normal_pressure_input"
+                        android:id="@+id/normal_m2_input"
                         android:layout_gravity="right" />
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
-                        android:id="@+id/normal_temperature_input"
+                        android:id="@+id/normal_p21_input"
                         android:layout_gravity="right" />
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
-                        android:id="@+id/normal_density_input"
+                        android:id="@+id/normal_pt21_input"
                         android:layout_gravity="right" />
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
-                        android:id="@+id/normal_area_input"
+                        android:id="@+id/normal_pt2p1_input"
                         android:layout_gravity="right" />
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
-                        android:id="@+id/normal_density_input2"
+                        android:id="@+id/normal_t21_input"
                         android:layout_gravity="right" />
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
-                        android:id="@+id/normal_area_input2"
+                        android:id="@+id/normal_rho21_input"
                         android:layout_gravity="right" />
                 </LinearLayout>
             </LinearLayout>
@@ -207,13 +206,13 @@ limitations under the License.
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right">
-
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Calculate"
                     android:id="@+id/normal_calculate"
                     android:layout_centerInParent="true"
+                    android:onClick="NormalCalculate"
                     />
             </LinearLayout>
             <LinearLayout
@@ -231,35 +230,49 @@ limitations under the License.
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/normal_mach_output"
+                    android:id="@+id/normal_m1_output"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/normal_pressure_output"
+                    android:id="@+id/normal_m2_output"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/normal_temperature_output"
+                    android:id="@+id/normal_p21_output"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/normal_density_output"
+                    android:id="@+id/normal_pt21_output"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/normal_area_output"
+                    android:id="@+id/normal_pt2p1_output"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/normal_t21_output"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/normal_rho21_output"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />

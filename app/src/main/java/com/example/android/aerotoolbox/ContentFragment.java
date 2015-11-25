@@ -44,8 +44,8 @@ public class ContentFragment extends Fragment {
             case 0: return inflater.inflate(R.layout.reynolds_view, container, false);
             case 1: return inflater.inflate(R.layout.isentropic, container, false);
             case 2: return inflater.inflate(R.layout.normal, container, false);
-//            case 3: return inflater.inflate(R.layout.oblique, container, false);
-//            case 4: return inflater.inflate(R.layout.expansion, container, false);
+            case 3: return inflater.inflate(R.layout.normal, container, false);
+            case 4: return inflater.inflate(R.layout.normal, container, false);
         }
 
         return inflater.inflate(R.layout.article_view, container, false);

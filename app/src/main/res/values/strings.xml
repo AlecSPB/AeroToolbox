@@ -18,6 +18,16 @@
     <string name="rho12_ratio">\u03C11/\u03C12</string>
 
 
+    <string-array name="normal_array">
+        <item name="Mach1">M1</item>
+        <item name="Mach2">M2</item>
+        <item name="p21_static_ratio">P2/P1</item>
+        <item name="p21_total_ratio">Pt2/Pt1</item>
+        <item name="p21_ts_ratio">Pt2/P1</item>
+        <item name="t21_static_ratio">T2/T1</item>
+        <item name="v21_ratio">\u03C11/\u03C12,V2/V1</item>
+    </string-array>
+
     <!--
     <string name="p_ratio">P<sub>0</sub>/P</string>
     <string name="t_ratio">T<sub>0</sub>/T</string>
