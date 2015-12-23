@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Aero Toolbox</string>
-    <string name="Mach">Mach</string>
 
+    <string name="atmosphere_title">Standard Atmosphere</string>
+    <string name="oblique_title">Oblique Shock</string>
+    <string name="expansion_title">Prandtl-Meyer Expansion</string>
+    <string name="normal_title">Normal Shock</string>
+    <string name="isentropic_title">Isentropic Flow</string>
+    <string name="reynolds_title">Reynolds Number</string>
+
+    <string name="height">h</string>
+    <string name="pressure">P</string>
+    <string name="temperature">T</string>
+    <string name="density">\u03C1</string>
+    <string name="viscosity">\u03BC</string>
+
+    <string name="Mach">Mach</string>
     <string name="p_ratio">P/Pt</string>
     <string name="t_ratio">T/Tt</string>
     <string name="a_ratio">A/A<sup>*</sup></string>
@@ -13,7 +26,7 @@
     <string name="t21_static_ratio">T2/T1</string>
     <string name="p21_total_ratio">Pt2/Pt1</string>
     <string name="p21_static_ratio">P2/P1</string>
-    <string name="p21_ts_ratio">Pt2/P1</string>
+    <string name="p21_ts_ratio">Pt2/Pt1</string>
     <string name="v21_ratio">V2/V1</string>
     <string name="rho12_ratio">\u03C11/\u03C12</string>
 
@@ -33,6 +46,34 @@
     <string name="t_ratio">T<sub>0</sub>/T</string>
     <string name="rho_ratio">\u03C1<sub>0</sub>/\u03C1</string>
     -->
+    <string name="M1">M1</string>
+    <string name="delta">\u03b4</string>
+    <string name="theta">\u03b8</string>
+    <string name="nu">\u03bd</string>
+
+    <string-array name="oblique">
+        <item>M1, \u03b8</item>
+        <item>M1, \u03b4</item>
+        <item>\u03b4, \u03b8</item>
+    </string-array>
+
+    <string-array name="expansion">
+<!--    <item>M<sub><small>1</small></sub>, \u03bd</item>
+        <item>M<sub><small>2</small></sub>, \u03bd</item>
+        <item>M<sub><small>1</small></sub>,M<sub><small>2</small></sub></item>
+-->
+        <item>M1, \u03bd</item>
+        <item>M2, \u03bd</item>
+        <item>M1, M2</item>
+    </string-array>
+
+    <string-array name="expansion_array">
+        <item name="Mach1">M1</item>
+        <item name="Mach2">M2</item>
+        <item>\u03bd1</item>
+        <item>\u03bd2</item>
+        <item>\u03bd offset</item>
+    </string-array>
 
     <string-array name="density">
         <item>kg/m<sup>3</sup></item>
@@ -43,6 +84,12 @@
         <item>m/s</item>
         <item>ft/s</item>
         <item>in/s</item>
+    </string-array>
+    <string-array name="temperature">
+        <item>K</item>
+        <item>\u00B0C</item>
+        <item>\u00B0R</item>
+        <item>\u00B0F</item>
     </string-array>
     <string-array name="viscosity">
         <item>Pa &#8226; s</item>

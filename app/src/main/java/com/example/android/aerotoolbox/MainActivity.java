@@ -15,11 +15,15 @@
  */
 package com.example.android.aerotoolbox;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
@@ -56,19 +60,14 @@ public class MainActivity extends FragmentActivity
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, firstFragment).commit();
-        }
-    }
-/*
-    Spinner spinner = (Spinner) findViewById(R.id.spinner);
-    // Create an ArrayAdapter using the string array and a default spinner layout
-    ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-            R.array.reynold_density, android.R.layout.simple_spinner_item);
-    // Specify the layout to use when the list of choices appears
-    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-    // Apply the adapter to the spinner
-    spinner.setAdapter(adapter);
-*/
+        }
+
+    }
+
+    //GLOBAL VARIABLE
+    int EXPANSION_POSITION=0;
+
     public void onArticleSelected(int position) {
         // The user selected the headline of an article from the HeadlinesFragment
 
@@ -102,19 +101,28 @@ public class MainActivity extends FragmentActivity
         }
     }
 
-    private double NewtownIsentropic(double M, double A, double tol, int max_it){
-        double f, df, x1, t;
-        for (int i=0; i<max_it;i++) {
-            f = Math.pow(M,6)+15*Math.pow(M,4)+75*Math.pow(M,2)-216*M*A+125;
-            df = 6*Math.pow(M,5)+60*Math.pow(M,3)+150*M-216*A;
-            x1 = M-f/df;
-            t = Math.abs(M-x1);
-            M=x1;
-            if (t<tol) {
-                break;
-            }
+    public class NormalValues {
+        public double M1, M2, p21, pt21, pt2p1, t21, rho21;
+
+        // constructor
+        public NormalValues(double M1_in) {
+            double M1sq;
+            M1=M1_in;
+            M1sq=M1_in*M1_in;
+
+            M2=Math.sqrt((M1sq+5)/(7*M1sq-1));
+            p21=(7*M1sq-1)/6;
+            pt21=Math.pow((6*M1sq)/(M1sq+5),3.5)*Math.pow(6/(7*M1sq-1),2.5);
+            pt2p1=Math.pow((6*M1sq)/(5),3.5)*Math.pow(6/(7*M1sq-1),2.5);
+            t21=(7*M1sq-1)*(M1sq+5)/(36*M1sq);
+            rho21=(6*M1sq)/(M1sq+5);
         }
-        return M;
+
+        //methods
+        public double [] values(){
+            double [] normal_values={M1,M2,p21,pt21,pt2p1,t21,rho21};
+            return normal_values;
+        }
     }
 
     private void IsentropicSetMessage(int[] prefixes, int[] labels, double[] values, int title){
@@ -220,13 +228,13 @@ public class MainActivity extends FragmentActivity
                 }else{
                     double tol=1e-10; int max_it=100;
                     M=0;
-                    M=NewtownIsentropic(M, a_ratio, tol, max_it);
+                    M= AeroCalc.Isentropic(M, a_ratio, tol, max_it);
                     t_ratio = 1 / (1 + M * M / 5);
                     p_ratio = Math.pow(t_ratio, 3.5);
                     rho_ratio = p_ratio / t_ratio;
 
                     double M2=10, t_ratio2, p_ratio2, rho_ratio2;
-                    M2=NewtownIsentropic(M2, a_ratio, tol, max_it);
+                    M2= AeroCalc.Isentropic(M2, a_ratio, tol, max_it);
                     t_ratio2 = 1 / (1 + M2 * M2 / 5);
                     p_ratio2 = Math.pow(t_ratio2, 3.5);
                     rho_ratio2 = p_ratio2 / t_ratio2;
@@ -263,6 +271,7 @@ public class MainActivity extends FragmentActivity
     }
 
     public void ReynoldsReset(View view) {
+
         EditText text;
         Spinner spinner;
         int density_index, viscosity_index;
@@ -323,83 +332,16 @@ public class MainActivity extends FragmentActivity
         }
         else{
             Re = density * velocity * length / viscosity
-            * density_units[density_index]
-            * velocity_units[velocity_index]
-            * length_units[length_index]
-            / viscosity_units[viscosity_index];
+                    * density_units[density_index]
+                    * velocity_units[velocity_index]
+                    * length_units[length_index]
+                    / viscosity_units[viscosity_index];
         }
 
         String message = "Reynold's Number: " + String.format("%1$,.2f", Re);
 
         TextView ReynoldTextView = (TextView) findViewById(R.id.reynold_number_value);
         ReynoldTextView.setText(message);
-    }
-
-    private double NewtownNormal_pt21(double M1, double pt21, double tol, int max_it){
-        double f, df, x1, t, M1sq;
-        M1sq=M1*M1;
-        for (int i=0; i<max_it;i++) {
-            f = Math.pow((6*M1sq)/(M1sq+5),3.5)*Math.pow(6/(7*M1sq-1),2.5)-pt21;
-            //PROBLEM HERE WITH  f or df;
-            df = 7/2*(6/(M1sq+5)-(6*M1sq)/Math.pow(M1sq+5,2))*Math.pow(6/(7*M1sq - 1),5/2)*Math.pow((6*M1sq)/(M1sq + 5),5/2)
-                    -105*Math.pow(6/(7*M1sq - 1),1.5)*Math.pow(6*M1sq/(M1sq + 5),3.5)/Math.pow(7*M1sq - 1,2);
-            x1 = M1sq-f/df;
-            t = Math.abs(M1sq-x1);
-            M1sq=x1;
-
-            if (t<tol) {
-                break;
-            }
-        }
-        return Math.sqrt(M1sq);
-    }
-    private double NewtownNormal_pt2p1(double M1, double pt2p1, double tol, int max_it){
-        double f, df, x1, t, M1sq;
-        //M1sq=10;
-        M1sq=M1*M1;
-        for (int i=0; i<max_it;i++) {
-            f = Math.pow((6*M1sq)/5,3.5)*Math.pow(6/(7*M1sq-1),2.5)-pt2p1;
-            df = 21/5*Math.pow(6*M1sq/5,2.5)*Math.pow(6/(7*M1sq - 1),2.5)
-                    -105*Math.pow(6*M1sq/5,3.5)*Math.pow(6/(7*M1sq - 1),1.5)/Math.pow(7*M1sq-1,2);
-            x1 = M1sq-f/df;
-            t = Math.abs(M1sq-x1);
-            M1sq=x1;
-            if (t<tol) {
-                break;
-            }
-        }
-        return Math.sqrt(M1sq);
-    }
-
-    public class NormalValues {
-        public double M1, M2, p21, pt21, pt2p1, t21, rho21;
-
-        // constructor
-        public NormalValues(double M1_in) {
-            double M1sq;
-            M1=M1_in;
-            M1sq=M1_in*M1_in;
-
-            M2=Math.sqrt((M1sq+5)/(7*M1sq-1));
-            p21=(7*M1sq-1)/6;
-            pt21=Math.pow((6*M1sq)/(M1sq+5),3.5)*Math.pow(6/(7*M1sq-1),2.5);
-            pt2p1=Math.pow((6*M1sq)/(5),3.5)*Math.pow(6/(7*M1sq-1),2.5);
-            t21=(7*M1sq-1)*(M1sq+5)/(36*M1sq);
-            rho21=(6*M1sq)/(M1sq+5);
-        }
-
-        //methods
-        public double [] values(){
-            double [] normal_values={M1,M2,p21,pt21,pt2p1,t21,rho21};
-            return normal_values;
-        }
-    }
-
-    public void ShowToast(CharSequence text){
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
     }
 
     public void NormalCalculate(View view) {
@@ -438,6 +380,10 @@ public class MainActivity extends FragmentActivity
                     ShowToast("Downstream Mach number must be less than 1");
                     return;
                 }
+                if (M2<0.377964474){
+                    ShowToast("Downstream Mach number must be greater 1/sqrt(7)=.3780");
+                    return;
+                }
                 M1=Math.sqrt((M2*M2 + 5)/(7*M2*M2 - 1));
             }
             else if (radio_p21.isChecked()) {
@@ -456,7 +402,7 @@ public class MainActivity extends FragmentActivity
                     ShowToast("Total pressure ratio must be less than 1");
                     return;
                 }
-                M1=NewtownNormal_pt21(1.01,pt21,1e-10,100);
+                M1= AeroCalc.Normal_pt21(1.01, pt21, 1e-10, 100);
             }
             else if (radio_pt2p1.isChecked()) {
                 text = (EditText) findViewById(R.id.normal_pt2p1_input);
@@ -465,7 +411,7 @@ public class MainActivity extends FragmentActivity
                     ShowToast("Value must be greater than Pt/P for sonic flow, ~1.8929");
                     return;
                 }
-                M1=NewtownNormal_pt2p1(1.01,pt2p1,1e-10,40);
+                M1= AeroCalc.Normal_pt2p1(1.01, pt2p1, 1e-10, 40);
             }
             else if (radio_t21.isChecked()) {
                 text = (EditText) findViewById(R.id.normal_t21_input);
@@ -503,6 +449,7 @@ public class MainActivity extends FragmentActivity
         }
 
     }
+
     private void NormalSetMessage(String[] prefixes, int[] labels, double[] values, int title){
         String message;
         TextView CurrentTextView;
@@ -513,6 +460,168 @@ public class MainActivity extends FragmentActivity
             CurrentTextView.setText(message);
         }
 
+    }
+
+    public void ObliqueReset(View view) {
+        EditText text;
+        Spinner spinner;
+        int index;
+
+        spinner = (Spinner) findViewById(R.id.spinner_oblique);
+        index = spinner.getSelectedItemPosition();
+
+        String [] text1_vals   = {"1.5", "1.5", "20"};
+        String [] text2_vals   = {"10", "20", "10"};
+
+        text = (EditText) findViewById(R.id.oblique_1);
+        text.setText(text1_vals[index]);
+        text = (EditText) findViewById(R.id.oblique_2);
+        text.setText(text2_vals[index]);
+
+    }
+
+    public void ObliqueClear(View view) {
+        EditText text;
+        text = (EditText) findViewById(R.id.oblique_1);
+        text.setText("");
+        text = (EditText) findViewById(R.id.oblique_2);
+        text.setText("");
+    }
+
+    public void ExpansionReset(View view) {
+        EditText text;
+        //Spinner spinner;
+        int index;
+
+        //spinner = (Spinner) findViewById(R.id.spinner_expansion);
+        //index = spinner.getSelectedItemPosition();
+
+        index=EXPANSION_POSITION;
+
+        String [] text1_vals   = {"1", "1.5", "1"};
+        String [] text2_vals   = {"11.9", "11.9", "1.5"};
+
+        text = (EditText) findViewById(R.id.expansion_1);
+        text.setText(text1_vals[index]);
+        text = (EditText) findViewById(R.id.expansion_2);
+        text.setText(text2_vals[index]);
+    }
+
+    public void ExpansionClear(View view) {
+        EditText text;
+        text = (EditText) findViewById(R.id.expansion_1);
+        text.setText("");
+        text = (EditText) findViewById(R.id.expansion_2);
+        text.setText("");
+    }
+
+    public void ExpansionCalculate(View view) {
+
+        int labels[] = {R.id.expansion_M1_output, R.id.expansion_M2_output,
+                R.id.expansion_nu1_output, R.id.expansion_nu2_output, R.id.expansion_nuoffset_output};
+        String prefixes[] = getResources().getStringArray(R.array.expansion_array);
+        int title = R.id.expansion_label;
+
+        double M1, M2, nu;
+
+        EditText text;
+        //Spinner spinner;
+        int index;
+
+        //spinner = (Spinner) findViewById(R.id.spinner_expansion);
+        //index = spinner.getSelectedItemPosition();
+        index=EXPANSION_POSITION;
+
+        int max_it=100;
+        double tol=1e-10;
+        double M_guess=1.01;
+        double nu1=0;
+        double nu2=0;
+        double nu_offset=0;
+
+        try{
+
+            if (index==0){
+                text = (EditText) findViewById(R.id.expansion_1);
+                M1 = Double.parseDouble(text.getText().toString().trim());
+                text = (EditText) findViewById(R.id.expansion_2);
+                nu_offset = Double.parseDouble(text.getText().toString().trim());
+
+                nu1=AeroCalc.M_to_nu(M1);
+                nu2=nu1+nu_offset;
+
+                M2=AeroCalc.Expansion_nu_to_M(M_guess, nu2, tol, max_it);
+            }
+            else if (index==1){
+                text = (EditText) findViewById(R.id.expansion_1);
+                M2 = Double.parseDouble(text.getText().toString().trim());
+                text = (EditText) findViewById(R.id.expansion_2);
+                nu_offset = Double.parseDouble(text.getText().toString().trim());
+
+                nu2=AeroCalc.M_to_nu(M2);
+                nu1=nu2-nu_offset;
+
+                M1=AeroCalc.Expansion_nu_to_M(M_guess, nu1, tol, max_it);            }
+            else if (index==2)
+            {
+                text = (EditText) findViewById(R.id.expansion_1);
+                M1 = Double.parseDouble(text.getText().toString().trim());
+                text = (EditText) findViewById(R.id.expansion_2);
+                M2 = Double.parseDouble(text.getText().toString().trim());
+
+                nu1=AeroCalc.M_to_nu(M1);
+                nu2=AeroCalc.M_to_nu(M2);
+                nu_offset=nu2-nu1;
+
+            }
+            else{
+                return;
+            }
+        }
+        catch (NumberFormatException e){
+            return;
+        }
+
+        double [] values={M1,M2,nu1,nu2,nu_offset};
+        ExpansionSetMessage(prefixes, labels, values, title);
+    }
+
+    private void ExpansionSetMessage(String[] prefixes, int[] labels, double[] values, int title){
+        String message;
+        TextView CurrentTextView;
+
+        for(int i=0;i<5;i++) {
+            message = prefixes[i] + ": " + String.format("%1$,.9f", values[i]);
+            CurrentTextView = (TextView) findViewById(labels[i]);
+            CurrentTextView.setText(message);
+        }
+
+    }
+
+    public void ExpansionToggle(View view){
+        String text1, text2, nu;
+        nu=getString(R.string.nu);
+        String input1 [] = {"M1","M2","M1"};
+        String input2 [] = {nu,nu,"M2"};
+
+        TextView ExpansionTextView;
+        EXPANSION_POSITION=(EXPANSION_POSITION+1)%3;
+
+        text1 = input1[EXPANSION_POSITION];
+        text2 = input2[EXPANSION_POSITION];
+
+        ExpansionTextView = (TextView) findViewById(R.id.expansion_input1_text);
+        ExpansionTextView.setText(text1);
+        ExpansionTextView = (TextView) findViewById(R.id.expansion_input2_text);
+        ExpansionTextView.setText(text2);
+
+    }
+
+    public void ShowToast(CharSequence text){
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
 }

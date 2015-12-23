@@ -18,6 +18,7 @@ package com.example.android.aerotoolbox;
 public class Titles {
 
     static String[] Headlines = {
+            "Standard Atmosphere",
             "Reynolds Number",
             "Isentropic Flow",
             "Normal Shock",

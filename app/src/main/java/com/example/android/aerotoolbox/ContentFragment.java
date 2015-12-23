@@ -41,11 +41,12 @@ public class ContentFragment extends Fragment {
         int position=args.getInt(ARG_POSITION);
 
         switch (position){
-            case 0: return inflater.inflate(R.layout.reynolds_view, container, false);
-            case 1: return inflater.inflate(R.layout.isentropic, container, false);
-            case 2: return inflater.inflate(R.layout.normal, container, false);
+            case 0: return inflater.inflate(R.layout.atmosphere_view, container, false);
+            case 1: return inflater.inflate(R.layout.reynolds_view, container, false);
+            case 2: return inflater.inflate(R.layout.isentropic_view, container, false);
             case 3: return inflater.inflate(R.layout.normal, container, false);
-            case 4: return inflater.inflate(R.layout.normal, container, false);
+            case 4: return inflater.inflate(R.layout.oblique_view, container, false);
+            case 5: return inflater.inflate(R.layout.expansion_view, container, false);
         }
 
         return inflater.inflate(R.layout.article_view, container, false);
