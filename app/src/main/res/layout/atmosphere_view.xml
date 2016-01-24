@@ -46,33 +46,33 @@ limitations under the License.
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:id="@+id/radio_standard">
+                    android:id="@+id/radio_atmosphere">
 
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/radio_mach"
+                        android:id="@+id/radio_atmosphere_h"
                         android:layout_weight="1"/>
 
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/radio_pressure"
+                        android:id="@+id/radio_atmosphere_P"
                         android:layout_weight="1" />
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/radio_temperature"
+                        android:id="@+id/radio_atmosphere_T"
                         android:layout_weight="1" />
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/radio_density"
+                        android:id="@+id/radio_atmosphere_rho"
                         android:layout_weight="1" />
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/radio_area"
+                        android:id="@+id/radio_atmosphere_mu"
                         android:layout_weight="1" />
 
                 </RadioGroup>
@@ -133,34 +133,34 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
-                        android:id="@+id/standard_mach_input" />
+                        android:id="@+id/atmosphere_h_input" />
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
-                        android:id="@+id/standard_pressure_input"
+                        android:id="@+id/atmosphere_pressure_input"
                         />
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
-                        android:id="@+id/standard_temperature_input"
+                        android:id="@+id/atmosphere_temperature_input"
                         />
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
-                        android:id="@+id/standard_density_input"
+                        android:id="@+id/atmosphere_density_input"
                          />
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
-                        android:id="@+id/standard_area_input"
+                        android:id="@+id/atmosphere_mu_input"
                         />
                 </LinearLayout>
 
@@ -172,7 +172,7 @@ limitations under the License.
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:id="@+id/atmosphere_spinner_length"
+                        android:id="@+id/atmosphere_spinner_height"
                         android:entries="@array/length"/>
                     <Spinner
                         android:layout_width="match_parent"
@@ -199,21 +199,18 @@ limitations under the License.
                         android:id="@+id/atmosphere_spinner_viscosity"
                         android:entries="@array/viscosity"/>
                 </LinearLayout>
-
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right">
-
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Calculate"
-                    android:id="@+id/standard_calculate"
+                    android:id="@+id/atmosphere_calculate"
                     android:layout_centerInParent="true"
-                    android:onClick="standardCalculate"
+                    android:onClick="AtmosphereCalculate"
                     />
             </LinearLayout>
             <LinearLayout
@@ -224,42 +221,49 @@ limitations under the License.
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/standard_label"
+                    android:id="@+id/atmosphere_english_label"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/standard_mach_output"
+                    android:id="@+id/atmosphere_h_output"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/standard_pressure_output"
+                    android:id="@+id/atmosphere_P_output"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/standard_temperature_output"
+                    android:id="@+id/atmosphere_T_output"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/standard_density_output"
+                    android:id="@+id/atmosphere_rho_output"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/standard_area_output"
+                    android:id="@+id/atmosphere_mu_output"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/atmosphere_a_output"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
@@ -272,45 +276,89 @@ limitations under the License.
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/standard_label2"
+                    android:id="@+id/atmosphere_metric_label"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/standard_mach_output2"
+                    android:id="@+id/atmosphere_h_outputm"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/standard_pressure_output2"
+                    android:id="@+id/atmosphere_P_outputm"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/standard_temperature_output2"
+                    android:id="@+id/atmosphere_T_outputm"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/standard_density_output2"
+                    android:id="@+id/atmosphere_rho_outputm"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/standard_area_output2"
+                    android:id="@+id/atmosphere_mu_outputm"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"
                     />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/atmosphere_a_outputm"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/atmosphere_ratio_label"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/atmosphere_P_ratio_output"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/atmosphere_T_ratio_output"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/atmosphere_rho_ratio_output"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+
+
             </LinearLayout>
 
         </LinearLayout>

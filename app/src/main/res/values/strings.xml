@@ -41,11 +41,28 @@
         <item name="v21_ratio">\u03C11/\u03C12,V2/V1</item>
     </string-array>
 
-    <!--
-    <string name="p_ratio">P<sub>0</sub>/P</string>
-    <string name="t_ratio">T<sub>0</sub>/T</string>
-    <string name="rho_ratio">\u03C1<sub>0</sub>/\u03C1</string>
-    -->
+    <string-array name="atmosphere_title_array">
+        <item name="atmosphere_english_label">English Units</item>
+        <item name="atmosphere_metric_label">Metric Units</item>
+        <item name="atmosphere_ratio_label">Ratios</item>
+    </string-array>
+
+    <string-array name="atmosphere_array">
+        <item name="height">h</item>
+        <item name="pressure">p</item>
+        <item name="temperature">T</item>
+        <item name="density">\u03C1</item>
+        <item name="mu">mu</item>
+        <item name="a">a</item>
+    </string-array>
+
+    <string-array name="atmosphere_ratio_array">
+        <item name="pressure_ratio">p ratio</item>
+        <item name="temperature_ratio">T ratio</item>
+        <item name="density_ratio">rho ratio</item>
+    </string-array>
+
+
     <string name="M1">M1</string>
     <string name="delta">\u03b4</string>
     <string name="theta">\u03b8</string>
@@ -58,10 +75,6 @@
     </string-array>
 
     <string-array name="expansion">
-<!--    <item>M<sub><small>1</small></sub>, \u03bd</item>
-        <item>M<sub><small>2</small></sub>, \u03bd</item>
-        <item>M<sub><small>1</small></sub>,M<sub><small>2</small></sub></item>
--->
         <item>M1, \u03bd</item>
         <item>M2, \u03bd</item>
         <item>M1, M2</item>
@@ -73,6 +86,17 @@
         <item>\u03bd1</item>
         <item>\u03bd2</item>
         <item>\u03bd offset</item>
+    </string-array>
+
+    <string-array name="oblique_array">
+        <item name="Mach1">M1</item>
+        <item name="Mach2">M2</item>
+        <item name="delta">\u03b4</item>
+        <item name="theta">\u03b8</item>
+        <item name="delta_max">\u03b4<sub>max</sub></item>
+        <item name="P_ratio">P2/P1</item>
+        <item name="T_ratio">T2/T1</item>
+        <item name="rho_ratio">\u03C12/\u03C11</item>
     </string-array>
 
     <string-array name="density">

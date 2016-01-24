@@ -30,6 +30,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 public class MainActivity extends FragmentActivity
         implements MenuFragment.OnHeadlineSelectedListener {
 
@@ -67,6 +68,7 @@ public class MainActivity extends FragmentActivity
 
     //GLOBAL VARIABLE
     int EXPANSION_POSITION=0;
+    int OBLIQUE_POSITION=0;
 
     public void onArticleSelected(int position) {
         // The user selected the headline of an article from the HeadlinesFragment
@@ -195,6 +197,10 @@ public class MainActivity extends FragmentActivity
             else if (radio_pressure.isChecked()) {
                 text = (EditText) findViewById(R.id.isentropic_pressure_input);
                 p_ratio = Double.parseDouble(text.getText().toString().trim());
+                if (p_ratio<0 || p_ratio>1){
+                    ShowToast("Pressure ratio must be between 0 and 1");
+                    return;
+                }
                 t_ratio = Math.pow(p_ratio, 1 / 3.5);
                 M = Math.sqrt(5/t_ratio-5);
                 rho_ratio = p_ratio / t_ratio;
@@ -203,6 +209,10 @@ public class MainActivity extends FragmentActivity
             else if (radio_temperature.isChecked()) {
                 text = (EditText) findViewById(R.id.isentropic_temperature_input);
                 t_ratio = Double.parseDouble(text.getText().toString().trim());
+                if (t_ratio<0 || t_ratio>1){
+                    ShowToast("Temperature ratio must be between 0 and 1");
+                    return;
+                }
                 M = Math.sqrt(5 / t_ratio - 5);
                 p_ratio = Math.pow(t_ratio, 3.5);
                 rho_ratio = p_ratio / t_ratio;
@@ -211,6 +221,10 @@ public class MainActivity extends FragmentActivity
             else if (radio_density.isChecked()) {
                 text = (EditText) findViewById(R.id.isentropic_density_input);
                 rho_ratio = Double.parseDouble(text.getText().toString().trim());
+                if (rho_ratio<0 || rho_ratio>1){
+                    ShowToast("Density ratio must be between 0 and 1");
+                    return;
+                }
                 t_ratio = Math.pow(rho_ratio, 0.4);
                 p_ratio = t_ratio * rho_ratio;
                 M = Math.sqrt(5 / t_ratio - 5);
@@ -225,7 +239,8 @@ public class MainActivity extends FragmentActivity
                     p_ratio = Math.pow(t_ratio, 3.5);
                     rho_ratio = p_ratio / t_ratio;
                     IsentropicClearMessage(labels2, title2);
-                }else{
+                }
+                else if (a_ratio>1){
                     double tol=1e-10; int max_it=100;
                     M=0;
                     M= AeroCalc.Isentropic(M, a_ratio, tol, max_it);
@@ -241,7 +256,10 @@ public class MainActivity extends FragmentActivity
                     double values2 [] ={M2,p_ratio2,t_ratio2,rho_ratio2,a_ratio};
                     IsentropicSetMessage(prefixes, labels2, values2, title2);
                 }
-
+                else{
+                    ShowToast("Area ratio must be greater than or equal to 1");
+                    return;
+                }
             }
             else{
                 return;
@@ -308,40 +326,33 @@ public class MainActivity extends FragmentActivity
             length = Double.parseDouble(text.getText().toString().trim());
             text = (EditText) findViewById(R.id.reynold_viscosity);
             viscosity = Double.parseDouble(text.getText().toString().trim());
+
+            spinner = (Spinner) findViewById(R.id.spinner_density);
+            density_index = spinner.getSelectedItemPosition();
+            spinner = (Spinner) findViewById(R.id.spinner_velocity);
+            velocity_index = spinner.getSelectedItemPosition();
+            spinner = (Spinner) findViewById(R.id.spinner_length);
+            length_index = spinner.getSelectedItemPosition();
+            spinner = (Spinner) findViewById(R.id.spinner_viscosity);
+            viscosity_index = spinner.getSelectedItemPosition();
+
+            Reynolds reynolds = new Reynolds();
+            reynolds.Calculate(density, velocity, length, viscosity,
+                    density_index, velocity_index, length_index, viscosity_index);
+
+            String [] suffix = {"m", "ft", "in"};
+
+            String message = "Reynold's Number: " + String.format("%1$,.2f", reynolds.Re);
+            TextView textview = (TextView) findViewById(R.id.reynold_number_value);
+            textview.setText(message);
+
+            message = "Initial Spacing: " + String.format("%6.3e", reynolds.delta_s) + " " + suffix[length_index];
+            textview = (TextView) findViewById(R.id.spacing_value);
+            textview.setText(message);
         }
         catch (NumberFormatException e){
             return;
         }
-
-        spinner = (Spinner) findViewById(R.id.spinner_density);
-        density_index = spinner.getSelectedItemPosition();
-        spinner = (Spinner) findViewById(R.id.spinner_velocity);
-        velocity_index = spinner.getSelectedItemPosition();
-        spinner = (Spinner) findViewById(R.id.spinner_length);
-        length_index = spinner.getSelectedItemPosition();
-        spinner = (Spinner) findViewById(R.id.spinner_viscosity);
-        viscosity_index = spinner.getSelectedItemPosition();
-
-        double [] density_units   = {1, 1.225/0.0023769, 1.225/0.0765};//0.06244897959,0.00194032653};
-        double [] length_units    = {1, 1/3.280839895, 1/(3.280839895*12)};
-        double [] velocity_units  = length_units;
-        double [] viscosity_units = {1, 47.880106020829835};
-
-        if (viscosity==0) {
-            Re=Double.POSITIVE_INFINITY;
-        }
-        else{
-            Re = density * velocity * length / viscosity
-                    * density_units[density_index]
-                    * velocity_units[velocity_index]
-                    * length_units[length_index]
-                    / viscosity_units[viscosity_index];
-        }
-
-        String message = "Reynold's Number: " + String.format("%1$,.2f", Re);
-
-        TextView ReynoldTextView = (TextView) findViewById(R.id.reynold_number_value);
-        ReynoldTextView.setText(message);
     }
 
     public void NormalCalculate(View view) {
@@ -464,14 +475,10 @@ public class MainActivity extends FragmentActivity
 
     public void ObliqueReset(View view) {
         EditText text;
-        Spinner spinner;
-        int index;
+        int index = OBLIQUE_POSITION;
 
-        spinner = (Spinner) findViewById(R.id.spinner_oblique);
-        index = spinner.getSelectedItemPosition();
-
-        String [] text1_vals   = {"1.5", "1.5", "20"};
-        String [] text2_vals   = {"10", "20", "10"};
+        String [] text1_vals   = {"1.5", "1.5", "10"};
+        String [] text2_vals   = {"10", "56.7", "56.7"};
 
         text = (EditText) findViewById(R.id.oblique_1);
         text.setText(text1_vals[index]);
@@ -486,6 +493,166 @@ public class MainActivity extends FragmentActivity
         text.setText("");
         text = (EditText) findViewById(R.id.oblique_2);
         text.setText("");
+    }
+
+    public void ObliqueCalculate(View view) {
+
+        String prefixes[] = getResources().getStringArray(R.array.oblique_array);
+        int title1 = R.id.oblique_label_1;
+        int labels1[] = {R.id.oblique_M1_output_1,
+                R.id.oblique_M2_output_1,
+                R.id.oblique_delta_output_1,
+                R.id.oblique_theta_output_1,
+                R.id.oblique_delta_max_output_1,
+                R.id.oblique_P_ratio_1,
+                R.id.oblique_T_ratio_1,
+                R.id.oblique_rho_ratio_1};
+        int title2 = R.id.oblique_label_2;
+        int labels2[] = {R.id.oblique_M1_output_2,
+                R.id.oblique_M2_output_2,
+                R.id.oblique_delta_output_2,
+                R.id.oblique_theta_output_2,
+                R.id.oblique_delta_max_output_2,
+                R.id.oblique_P_ratio_2,
+                R.id.oblique_T_ratio_2,
+                R.id.oblique_rho_ratio_2};
+
+        EditText text;
+        int index = OBLIQUE_POSITION;
+        double M1, delta, theta;
+        ObliqueShock obliqueShock = new ObliqueShock();
+        String strong_or_weak;
+        double DELTA_MAX = 45.584691403;
+        try{
+
+            if (index==0) {
+                text = (EditText) findViewById(R.id.oblique_1);
+                M1 = Double.parseDouble(text.getText().toString().trim());
+                text = (EditText) findViewById(R.id.oblique_2);
+                delta = Double.parseDouble(text.getText().toString().trim());
+                if (M1<1){
+                    ShowToast("Mach number must be greater than 1");
+                    return;
+                }
+                if (delta>DELTA_MAX){
+                    ShowToast("Higher than maximum deflection angle "+String.format("%1$,.9f", DELTA_MAX));
+                    return;
+                }
+                obliqueShock.CalcFromM1delta(M1, delta, false);
+                if (obliqueShock.get_delta()==-370){
+                    ShowToast("Deflection angle exceeds maxmimum angle "+String.format("%1$,.9f", obliqueShock.get_delta_max()));
+                    return;
+                }
+                ObliqueSetMessage(prefixes, labels1, obliqueShock.values(), title1, "Weak Shock");
+
+                obliqueShock.CalcFromM1delta(M1, delta, true);
+                ObliqueSetMessage(prefixes, labels2, obliqueShock.values(), title2, "Strong Shock");
+            }
+            else if (index==1){
+                text = (EditText) findViewById(R.id.oblique_1);
+                M1 = Double.parseDouble(text.getText().toString().trim());
+                text = (EditText) findViewById(R.id.oblique_2);
+                theta = Double.parseDouble(text.getText().toString().trim());
+                if (M1<1){
+                    ShowToast("Mach number must be greater than 1");
+                    return;
+                }
+                obliqueShock.CalcFromM1theta(M1, theta);
+                ObliqueClearMessage(labels2, title2);
+
+                if (obliqueShock.get_theta()>obliqueShock.get_theta_max()){
+                    strong_or_weak="Strong Shock";
+                }
+                else{
+                    strong_or_weak="Weak Shock";
+                }
+                ObliqueSetMessage(prefixes, labels1, obliqueShock.values(), title1, strong_or_weak);
+            }
+            else if (index==2)
+            {
+                text = (EditText) findViewById(R.id.oblique_1);
+                delta = Double.parseDouble(text.getText().toString().trim());
+                text = (EditText) findViewById(R.id.oblique_2);
+                theta = Double.parseDouble(text.getText().toString().trim());
+                if (delta>DELTA_MAX){
+                    ShowToast("Higher than maximum deflection angle "+String.format("%1$,.9f", DELTA_MAX));
+                    return;
+                }
+                if (delta>theta){
+                    ShowToast("Deflection angle much be greater than shock angle");
+                    return;
+                }
+                obliqueShock.CalcFromdeltatheta(delta, theta);
+
+                if (obliqueShock.get_theta()>obliqueShock.get_theta_max()){
+                    strong_or_weak="Strong Shock";
+                }
+                else{
+                    strong_or_weak="Weak Shockl";
+                }
+                ObliqueClearMessage(labels2, title2);
+                ObliqueSetMessage(prefixes, labels1, obliqueShock.values(), title1, strong_or_weak);
+            }
+            else{
+                return;
+            }
+            if (obliqueShock.get_delta()<0){
+                ShowToast("Warning: negative deflection angle calculated");
+            }
+        }
+        catch (NumberFormatException e){
+            return;
+        }
+
+    }
+
+    private void ObliqueSetMessage(String[] prefixes, int[] labels, double[] values, int title, String title_string){
+        String message;
+        TextView CurrentTextView;
+
+        CurrentTextView = (TextView) findViewById(title);
+        CurrentTextView.setText(title_string);
+
+        for(int i=0;i<labels.length;i++) {
+            message = prefixes[i] + ": " + String.format("%1$,.9f", values[i]);
+            CurrentTextView = (TextView) findViewById(labels[i]);
+            CurrentTextView.setText(message);
+        }
+
+    }
+
+    private void ObliqueClearMessage(int[] labels, int title){
+        TextView CurrentTextView;
+
+        CurrentTextView = (TextView) findViewById(title);
+        CurrentTextView.setText("");
+
+        for(int i=0;i<labels.length;i++) {
+            CurrentTextView = (TextView) findViewById(labels[i]);
+            CurrentTextView.setText("");
+        }
+
+    }
+
+    public void ObliqueToggle(View view){
+        String text1, text2, delta, theta;
+        delta=getString(R.string.delta);
+        theta=getString(R.string.theta);
+
+        String input1 [] = {"M1","M1",delta};
+        String input2 [] = {delta,theta,theta};
+
+        TextView ExpansionTextView;
+        OBLIQUE_POSITION=(OBLIQUE_POSITION+1)%3;
+
+        text1 = input1[OBLIQUE_POSITION];
+        text2 = input2[OBLIQUE_POSITION];
+
+        ExpansionTextView = (TextView) findViewById(R.id.oblique_input1_text);
+        ExpansionTextView.setText(text1);
+        ExpansionTextView = (TextView) findViewById(R.id.oblique_input2_text);
+        ExpansionTextView.setText(text2);
+
     }
 
     public void ExpansionReset(View view) {
@@ -522,14 +689,12 @@ public class MainActivity extends FragmentActivity
         String prefixes[] = getResources().getStringArray(R.array.expansion_array);
         int title = R.id.expansion_label;
 
-        double M1, M2, nu;
+        double M1, M2;
+        double NU_MAX=130.45407685;
 
         EditText text;
-        //Spinner spinner;
         int index;
 
-        //spinner = (Spinner) findViewById(R.id.spinner_expansion);
-        //index = spinner.getSelectedItemPosition();
         index=EXPANSION_POSITION;
 
         int max_it=100;
@@ -546,22 +711,40 @@ public class MainActivity extends FragmentActivity
                 M1 = Double.parseDouble(text.getText().toString().trim());
                 text = (EditText) findViewById(R.id.expansion_2);
                 nu_offset = Double.parseDouble(text.getText().toString().trim());
-
+                if (M1<1){
+                    ShowToast("Upstream Mach must be greater than 1");
+                    return;
+                }
+                if (nu_offset>NU_MAX){
+                    ShowToast("Inputted deflection angle greater than max possible value 130.4541");
+                    return;
+                }
                 nu1=AeroCalc.M_to_nu(M1);
                 nu2=nu1+nu_offset;
-
+                if (nu2>NU_MAX){
+                    ShowToast("Warning: downstream deflection is angle greater than max possible value 130.4541");
+                }
                 M2=AeroCalc.Expansion_nu_to_M(M_guess, nu2, tol, max_it);
             }
             else if (index==1){
                 text = (EditText) findViewById(R.id.expansion_1);
                 M2 = Double.parseDouble(text.getText().toString().trim());
+                if (M2<1){
+                    ShowToast("Downstream Mach must be greater than 1");
+                    return;
+                }
                 text = (EditText) findViewById(R.id.expansion_2);
                 nu_offset = Double.parseDouble(text.getText().toString().trim());
 
                 nu2=AeroCalc.M_to_nu(M2);
                 nu1=nu2-nu_offset;
 
-                M1=AeroCalc.Expansion_nu_to_M(M_guess, nu1, tol, max_it);            }
+                if (nu1<0){
+                    ShowToast("Warning: Negative angle for upstream Mach number");
+                }
+
+                M1=AeroCalc.Expansion_nu_to_M(M_guess, nu1, tol, max_it);
+            }
             else if (index==2)
             {
                 text = (EditText) findViewById(R.id.expansion_1);
@@ -569,10 +752,23 @@ public class MainActivity extends FragmentActivity
                 text = (EditText) findViewById(R.id.expansion_2);
                 M2 = Double.parseDouble(text.getText().toString().trim());
 
+                if (M1<1){
+                    ShowToast("Upstream Mach must be greater than 1");
+                    return;
+                }
+                if (M2<1){
+                    ShowToast("Downstream Mach must be greater than 1");
+                    return;
+                }
                 nu1=AeroCalc.M_to_nu(M1);
                 nu2=AeroCalc.M_to_nu(M2);
                 nu_offset=nu2-nu1;
-
+                if (M1<1){
+                    ShowToast("Warning: Downstream Mach greater than 1 calculated");
+                }
+                if (M2<1){
+                    ShowToast("Warning: Downstream Mach greater than 1 calculated");
+                }
             }
             else{
                 return;
@@ -614,6 +810,191 @@ public class MainActivity extends FragmentActivity
         ExpansionTextView.setText(text1);
         ExpansionTextView = (TextView) findViewById(R.id.expansion_input2_text);
         ExpansionTextView.setText(text2);
+
+    }
+
+    public void AtmosphereCalculate(View view) {
+
+        int labels[] = {R.id.atmosphere_h_output, R.id.atmosphere_P_output, R.id.atmosphere_T_output,
+                R.id.atmosphere_rho_output, R.id.atmosphere_mu_output, R.id.atmosphere_a_output};
+        int labelsm[] = {R.id.atmosphere_h_outputm, R.id.atmosphere_P_outputm, R.id.atmosphere_T_outputm,
+                R.id.atmosphere_rho_outputm, R.id.atmosphere_mu_outputm, R.id.atmosphere_a_outputm};
+        int labelsr[] = {R.id.atmosphere_P_ratio_output, R.id.atmosphere_T_ratio_output,R.id.atmosphere_rho_ratio_output};
+        int titles[]={R.id.atmosphere_english_label , R.id.atmosphere_metric_label, R.id.atmosphere_ratio_label};
+        String title_string[]=getResources().getStringArray(R.array.atmosphere_title_array);
+        String prefixes[] = getResources().getStringArray(R.array.atmosphere_array);
+        String prefixes_r[] = getResources().getStringArray(R.array.atmosphere_ratio_array);
+
+        Double input;
+
+        RadioButton radio_h, radio_P, radio_T, radio_rho, radio_mu;
+        int index;
+        StandardAtmosphere atmos = new StandardAtmosphere();
+        EditText text;
+        Spinner spinner;
+
+        double P_sl=2116.2;
+        double rho_sl=0.0023769;
+        double T_sl=518.67;
+        double mu_sl=3.737e-7;
+
+        try{
+            radio_h = (RadioButton) findViewById(R.id.radio_atmosphere_h);
+            radio_P = (RadioButton) findViewById(R.id.radio_atmosphere_P);
+            radio_T = (RadioButton) findViewById(R.id.radio_atmosphere_T);
+            radio_rho = (RadioButton) findViewById(R.id.radio_atmosphere_rho);
+            radio_mu = (RadioButton) findViewById(R.id.radio_atmosphere_mu);
+
+            if(radio_h.isChecked()) {
+                double h_multiply [] ={3.2808399, 1, 1./12.};
+
+                text = (EditText) findViewById(R.id.atmosphere_h_input);
+                input=Double.parseDouble(text.getText().toString().trim());
+
+                spinner = (Spinner) findViewById(R.id.atmosphere_spinner_height);
+                index=spinner.getSelectedItemPosition();
+
+                input=h_multiply[index]*input;
+
+                if (input<-500){
+                    ShowToast("Height input cannot be less than zero.");
+                    return;
+                }
+                else {
+                    atmos.CalculateFromHeight(input);
+                }
+            }
+            else if(radio_P.isChecked()) {
+                double p_multiply[]={2116.2/101325.0,144.0,1.0};
+
+                text = (EditText) findViewById(R.id.atmosphere_pressure_input);
+                input=Double.parseDouble(text.getText().toString().trim());
+
+                spinner = (Spinner) findViewById(R.id.atmosphere_spinner_pressure);
+                index=spinner.getSelectedItemPosition();
+
+                input=p_multiply[index]*input;
+
+                if(input>P_sl*1.05) {
+                    ShowToast("Pressure input must be less than sea level standard");
+                    return;
+                } else if (input <= 0 ) {
+                    ShowToast("Pressure must be greater than 0 (vacuum)");
+                    return;
+                }
+                else{
+                    atmos.P_to_h(input);
+                }
+            }
+            else if(radio_T.isChecked()) {
+                double t_subtract[]={0,-273.15,0,-459.67};
+                double t_multiply[]={1.8,1.8,1.0,1.0};
+
+                spinner = (Spinner) findViewById(R.id.atmosphere_spinner_temperature);
+                index=spinner.getSelectedItemPosition();
+
+                text = (EditText) findViewById(R.id.atmosphere_temperature_input);
+                input=Double.parseDouble(text.getText().toString().trim());
+                input=t_multiply[index]*(input-t_subtract[index]);
+
+                if (input<.75189*T_sl){
+                    ShowToast("Temperature not 1 to 1 for this value");
+                    return;
+                }
+                else if(input > T_sl*1.05){
+                    ShowToast("Temperature must be less than sea level standard");
+                    return;
+                }
+                else{
+                    atmos.T_to_h(input);
+                }
+            }
+
+            else if(radio_rho.isChecked()) {
+                double [] density_multiply   = {0.0023769/1.225, 1, 0.0023769/0.0765};
+
+                spinner = (Spinner) findViewById(R.id.atmosphere_spinner_density);
+                index=spinner.getSelectedItemPosition();
+
+                text = (EditText) findViewById(R.id.atmosphere_density_input);
+                input=Double.parseDouble(text.getText().toString().trim());
+                input=density_multiply[index]*input;
+
+                if(input>rho_sl*1.05) {
+                    ShowToast("Density input must be less than sea level standard");
+                    return;
+                } else if (input <= 0 ) {
+                    ShowToast("Density must be greater than 0");
+                    return;
+                }
+                else{
+                    atmos.rho_to_h(input);
+                }
+            }
+            else if(radio_mu.isChecked()) {
+                double [] viscosity_multiply = {1.0/47.880106020829835,1};
+
+                spinner = (Spinner) findViewById(R.id.atmosphere_spinner_viscosity);
+                index=spinner.getSelectedItemPosition();
+
+                text = (EditText) findViewById(R.id.atmosphere_mu_input);
+                input=Double.parseDouble(text.getText().toString().trim());
+                input=viscosity_multiply[index]*input;
+
+                if(input>mu_sl*1.05) {
+                    ShowToast("Viscosity must be less than sea level standard");
+                    return;
+                }
+                else if (input < 2.9689e-7 ) {
+                    ShowToast("Viscosity input not attainable in standard atmosphere");
+                    return;
+                }
+                else{
+                    atmos.mu_to_h(input);
+                }
+            }
+            else{
+                return;
+            }
+        }
+        catch (NumberFormatException e){
+            return;
+        }
+
+        double [] values=atmos.values_english(); //h, P, T, rho, mu, a, P_ratio, T_ratio, rho_ratio
+        double [] valuesm=atmos.values_metric();
+        double [] valuesr=atmos.values_ratio();
+
+        if (values[0]<-5000){
+            ShowToast("Elevation too low"+values[0]);
+            return;
+        }
+        String [] suffix = {"ft", "psf", "R", "lb/ft^3", "lb s/ft^2","ft/s"};
+        String [] suffixm = {"m", "Pa", "K", "kg/m^3", "Pa s","m/s"};
+        String [] suffixr = {"", "", ""};
+
+        AtmosphereSetMessage(prefixes, suffix, labels, values, titles[0], title_string[0]);
+        AtmosphereSetMessage(prefixes, suffixm, labelsm, valuesm, titles[1], title_string[1]);
+        AtmosphereSetMessage(prefixes_r, suffixr, labelsr, valuesr, titles[2], title_string[2]);
+    }
+
+    private void AtmosphereSetMessage(String[] prefixes, String[] suffixes, int[] labels, double[] values, int title, String title_string){
+        String message;
+        TextView CurrentTextView;
+
+        CurrentTextView = (TextView) findViewById(title);
+        CurrentTextView.setText(title_string);
+
+        for(int i=0;i<labels.length;i++) {
+            if (i==4){
+                message = prefixes[i] + ": " + String.format("%6.3e", values[i]) +" "+ suffixes[i];
+            }
+            else {
+                message = prefixes[i] + ": " + String.format("%1$,.6f", values[i]) +" "+ suffixes[i];
+            }
+            CurrentTextView = (TextView) findViewById(labels[i]);
+            CurrentTextView.setText(message);
+        }
 
     }
 

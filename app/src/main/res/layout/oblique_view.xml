@@ -29,7 +29,6 @@ limitations under the License.
     android:orientation="vertical"
     android:padding="16dp"
     android:paddingBottom="0dp">
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,93 +36,255 @@ limitations under the License.
         android:textSize="16sp"
         android:gravity="bottom"
         android:layout_marginBottom="8dp"/>
-
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="0dp"
-        >
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="8dp"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/M1"
-                android:textSize="16sp"
-                android:gravity="bottom"
-                android:layout_marginBottom="8dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/theta"
-                android:textSize="16sp"
-                android:gravity="bottom"
-                android:layout_marginBottom="8dp"/>
-        </LinearLayout>
+        android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <EditText
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:ems="10"
-                android:id="@+id/oblique_1"
-                android:layout_gravity="right"
-                />
-            <EditText
+                android:orientation="horizontal"
+                android:paddingTop="0dp"
+                >
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="8dp"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/M1"
+                        android:id="@+id/oblique_input1_text"
+                        android:textSize="16sp"
+                        android:gravity="bottom"
+                        android:layout_marginBottom="8dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/delta"
+                        android:id="@+id/oblique_input2_text"
+                        android:textSize="16sp"
+                        android:gravity="bottom"
+                        android:layout_marginBottom="8dp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:ems="10"
+                        android:id="@+id/oblique_1"
+                        android:layout_gravity="right"
+                        />
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:ems="10"
+                        android:id="@+id/oblique_2"
+                        android:layout_gravity="right"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:ems="10"
-                android:id="@+id/oblique_2"
-                android:layout_gravity="right"
-                />
-        </LinearLayout>
-        </LinearLayout>
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinner_oblique"
-        android:entries="@array/oblique"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        />
+                android:gravity="end"
+                android:paddingTop="0dp">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Clear"
+                    android:id="@+id/oblique_clear"
+                    android:onClick="ObliqueClear"
+                    />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reset"
+                    android:id="@+id/oblique_reset"
+                    android:onClick="ObliqueReset"
+                    />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Calculate"
+                    android:id="@+id/oblique_calculate"
+                    android:onClick="ObliqueCalculate"
+                    />
+            </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="end"
-        android:paddingTop="0dp">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clear"
-            android:id="@+id/oblique_clear"
-            android:onClick="ObliqueClear"
-            />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reset"
-            android:id="@+id/oblique_reset"
-            android:onClick="ObliqueReset"
-            />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Calculate"
-            android:id="@+id/oblique_calculate"
-            />
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#F00000"
+                    android:text="Toggle Inputs"
+                    android:id="@+id/expansion_toggle"
+                    android:onClick="ObliqueToggle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_label_1"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_M1_output_1"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_M2_output_1"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_delta_output_1"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_theta_output_1"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_delta_max_output_1"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_P_ratio_1"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_T_ratio_1"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_rho_ratio_1"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_label_2"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_M1_output_2"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_M2_output_2"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_delta_output_2"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_theta_output_2"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_delta_max_output_2"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_P_ratio_2"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_T_ratio_2"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/oblique_rho_ratio_2"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
