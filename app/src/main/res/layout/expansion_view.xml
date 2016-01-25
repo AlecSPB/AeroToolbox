@@ -79,6 +79,7 @@ limitations under the License.
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:ems="10"
+                android:imeOptions="actionDone"
                 android:id="@+id/expansion_1"
                 android:layout_gravity="right"
                 />
@@ -87,6 +88,7 @@ limitations under the License.
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:ems="10"
+                android:imeOptions="actionDone"
                 android:id="@+id/expansion_2"
                 android:layout_gravity="right"
                 />

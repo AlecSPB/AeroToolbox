@@ -2,6 +2,8 @@ package com.example.android.aerotoolbox;
 
 /**
  * Created by Austin on 12/20/2015.
+ * Collection of various functions, mostly Newton's method, for isentropic flow, normal shocks and
+ * p-m flow. Not enough to warrant separate classes like ObliqueShock, Reynolds, or Atmosphere.
  */
 public class AeroCalc {
 

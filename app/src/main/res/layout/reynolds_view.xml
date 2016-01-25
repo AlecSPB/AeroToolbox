@@ -91,6 +91,7 @@ limitations under the License.
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:ems="10"
+                android:imeOptions="actionDone"
                 android:id="@+id/reynold_density"
                 android:layout_gravity="right"
                 android:text="1"/>
@@ -99,6 +100,7 @@ limitations under the License.
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:ems="10"
+                android:imeOptions="actionDone"
                 android:id="@+id/reynold_velocity"
                 android:layout_gravity="right"
                 android:text="100"/>
@@ -107,6 +109,7 @@ limitations under the License.
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:ems="10"
+                android:imeOptions="actionDone"
                 android:id="@+id/reynold_length"
                 android:layout_gravity="right"
                 android:text="1"/>
@@ -115,6 +118,7 @@ limitations under the License.
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:ems="10"
+                android:imeOptions="actionDone"
                 android:id="@+id/reynold_viscosity"
                 android:layout_gravity="right"
                 android:text=".01"/>

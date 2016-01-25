@@ -26,7 +26,7 @@ public class Reynolds {
             density*= density_units[density_index];
             velocity*= velocity_units[velocity_index];
             length*= length_units[length_index];
-            viscosity/= viscosity_units[viscosity_index];
+            viscosity*= viscosity_units[viscosity_index];
 
             Re = density * velocity * length / viscosity;
 

@@ -86,6 +86,7 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
+                        android:imeOptions="actionDone"
                         android:id="@+id/oblique_1"
                         android:layout_gravity="right"
                         />
@@ -94,6 +95,7 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
+                        android:imeOptions="actionDone"
                         android:id="@+id/oblique_2"
                         android:layout_gravity="right"
                         />

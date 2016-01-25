@@ -163,6 +163,7 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
+                        android:imeOptions="actionDone"
                         android:id="@+id/normal_m1_input"
                         android:layout_gravity="right" />
                     <EditText
@@ -170,6 +171,7 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
+                        android:imeOptions="actionDone"
                         android:id="@+id/normal_m2_input"
                         android:layout_gravity="right" />
                     <EditText
@@ -177,6 +179,7 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
+                        android:imeOptions="actionDone"
                         android:id="@+id/normal_p21_input"
                         android:layout_gravity="right" />
                     <EditText
@@ -184,6 +187,7 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
+                        android:imeOptions="actionDone"
                         android:id="@+id/normal_pt21_input"
                         android:layout_gravity="right" />
                     <EditText
@@ -191,6 +195,7 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
+                        android:imeOptions="actionDone"
                         android:id="@+id/normal_pt2p1_input"
                         android:layout_gravity="right" />
                     <EditText
@@ -198,6 +203,7 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
+                        android:imeOptions="actionDone"
                         android:id="@+id/normal_t21_input"
                         android:layout_gravity="right" />
                     <EditText
@@ -205,6 +211,7 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
+                        android:imeOptions="actionDone"
                         android:id="@+id/normal_rho21_input"
                         android:layout_gravity="right" />
                 </LinearLayout>

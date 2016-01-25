@@ -3,7 +3,7 @@ package com.example.android.aerotoolbox;
 /**
  * Created by Austin on 12/24/2015.
  */
-public class StandardAtmosphere {
+public class Atmosphere {
 
     private double h, rho_ratio, T_ratio, P_ratio, rho, T, P, mu, a;
     private double T_sl = 518.67;                                 //Sea level Temperature
@@ -16,7 +16,7 @@ public class StandardAtmosphere {
     double [] p_cut={472.7/P_sl,51.93/P_sl};
     double [] rho_cut={0.297116,0.032675884511227};
     // constructor
-    public StandardAtmosphere(){
+    public Atmosphere(){
     };
 
     //methods

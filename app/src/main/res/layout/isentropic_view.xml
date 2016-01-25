@@ -138,6 +138,7 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
+                        android:imeOptions="actionDone"
                         android:id="@+id/isentropic_mach_input"
                         android:layout_gravity="right" />
                     <EditText
@@ -145,6 +146,7 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
+                        android:imeOptions="actionDone"
                         android:id="@+id/isentropic_pressure_input"
                         android:layout_gravity="right" />
                     <EditText
@@ -152,6 +154,7 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
+                        android:imeOptions="actionDone"
                         android:id="@+id/isentropic_temperature_input"
                         android:layout_gravity="right" />
                     <EditText
@@ -159,6 +162,7 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
+                        android:imeOptions="actionDone"
                         android:id="@+id/isentropic_density_input"
                         android:layout_gravity="right" />
                     <EditText
@@ -166,6 +170,7 @@ limitations under the License.
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:ems="10"
+                        android:imeOptions="actionDone"
                         android:id="@+id/isentropic_area_input"
                         android:layout_gravity="right" />
                 </LinearLayout>

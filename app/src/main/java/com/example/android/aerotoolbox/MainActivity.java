@@ -15,15 +15,11 @@
  */
 package com.example.android.aerotoolbox;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
@@ -829,7 +825,7 @@ public class MainActivity extends FragmentActivity
 
         RadioButton radio_h, radio_P, radio_T, radio_rho, radio_mu;
         int index;
-        StandardAtmosphere atmos = new StandardAtmosphere();
+        Atmosphere atmos = new Atmosphere();
         EditText text;
         Spinner spinner;
 
