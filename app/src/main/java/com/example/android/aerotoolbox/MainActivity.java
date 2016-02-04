@@ -68,7 +68,8 @@ public class MainActivity extends FragmentActivity
 
     public void onArticleSelected(int position) {
         // The user selected the headline of an article from the HeadlinesFragment
-
+        EXPANSION_POSITION=0;
+        OBLIQUE_POSITION=0;
         // Capture the article fragment from the activity layout
         com.example.android.aerotoolbox.ContentFragment articleFrag = (com.example.android.aerotoolbox.ContentFragment)
                 getSupportFragmentManager().findFragmentById(R.id.article_fragment);
@@ -142,7 +143,12 @@ public class MainActivity extends FragmentActivity
         IsentropicTextView.setText(message);
 
         for(int i=0;i<5;i++) {
-            message = getString(prefixes[i]) + ": " + String.format("%1$,.9f", values[i]);
+            if ((values[i]<1e-6 || values[i]>1e6) && values[i]>0) {
+                message = getString(prefixes[i]) + ": " + String.format("%8.5e", values[i]);
+            }
+            else{
+                message = getString(prefixes[i]) + ": " + String.format("%1$,.9f", values[i]);
+            }
             IsentropicTextView = (TextView) findViewById(labels[i]);
             IsentropicTextView.setText(message);
         }
@@ -193,7 +199,7 @@ public class MainActivity extends FragmentActivity
             else if (radio_pressure.isChecked()) {
                 text = (EditText) findViewById(R.id.isentropic_pressure_input);
                 p_ratio = Double.parseDouble(text.getText().toString().trim());
-                if (p_ratio<0 || p_ratio>1){
+                if (p_ratio<=0 || p_ratio>=1){
                     ShowToast("Pressure ratio must be between 0 and 1");
                     return;
                 }
@@ -205,7 +211,7 @@ public class MainActivity extends FragmentActivity
             else if (radio_temperature.isChecked()) {
                 text = (EditText) findViewById(R.id.isentropic_temperature_input);
                 t_ratio = Double.parseDouble(text.getText().toString().trim());
-                if (t_ratio<0 || t_ratio>1){
+                if (t_ratio<=0 || t_ratio>=1){
                     ShowToast("Temperature ratio must be between 0 and 1");
                     return;
                 }
@@ -217,7 +223,7 @@ public class MainActivity extends FragmentActivity
             else if (radio_density.isChecked()) {
                 text = (EditText) findViewById(R.id.isentropic_density_input);
                 rho_ratio = Double.parseDouble(text.getText().toString().trim());
-                if (rho_ratio<0 || rho_ratio>1){
+                if (rho_ratio<=0 || rho_ratio>=1){
                     ShowToast("Density ratio must be between 0 and 1");
                     return;
                 }
@@ -244,7 +250,7 @@ public class MainActivity extends FragmentActivity
                     p_ratio = Math.pow(t_ratio, 3.5);
                     rho_ratio = p_ratio / t_ratio;
 
-                    double M2=10, t_ratio2, p_ratio2, rho_ratio2;
+                    double M2=1000, t_ratio2, p_ratio2, rho_ratio2;
                     M2= AeroCalc.Isentropic(M2, a_ratio, tol, max_it);
                     t_ratio2 = 1 / (1 + M2 * M2 / 5);
                     p_ratio2 = Math.pow(t_ratio2, 3.5);
@@ -361,7 +367,7 @@ public class MainActivity extends FragmentActivity
         int labels[] = {R.id.normal_m1_output, R.id.normal_m2_output, R.id.normal_p21_output,
                 R.id.normal_pt21_output, R.id.normal_pt2p1_output, R.id.normal_t21_output, R.id.normal_rho21_output};
         String prefixes[] = getResources().getStringArray(R.array.normal_array);
-        int title = R.id.normal_label;
+        //int title = R.id.normal_label;
 
         try {
             radio_m1 = (RadioButton) findViewById(R.id.normal_radio_m1);
@@ -448,7 +454,7 @@ public class MainActivity extends FragmentActivity
 
             OutputValues = new NormalValues(M1);
             values=OutputValues.values();
-            NormalSetMessage(prefixes, labels, values, title);
+            NormalSetMessage(prefixes, labels, values);
         }
 
         catch (NumberFormatException e){
@@ -457,12 +463,18 @@ public class MainActivity extends FragmentActivity
 
     }
 
-    private void NormalSetMessage(String[] prefixes, int[] labels, double[] values, int title){
+    private void NormalSetMessage(String[] prefixes, int[] labels, double[] values){
         String message;
         TextView CurrentTextView;
 
         for(int i=0;i<7;i++) {
-            message = prefixes[i] + ": " + String.format("%1$,.9f", values[i]);
+            //message = prefixes[i] + ": " + String.format("%1$,.9f", values[i]);
+            if ((values[i]<1e-6 || values[i]>1e6) && values[i]>0) {
+                message = prefixes[i] + ": " + String.format("%8.5e", values[i]);
+            }
+            else{
+                message = prefixes[i] + ": " + String.format("%1$,.9f", values[i]);
+            }
             CurrentTextView = (TextView) findViewById(labels[i]);
             CurrentTextView.setText(message);
         }
@@ -551,6 +563,11 @@ public class MainActivity extends FragmentActivity
                 theta = Double.parseDouble(text.getText().toString().trim());
                 if (M1<1){
                     ShowToast("Mach number must be greater than 1");
+                    return;
+                }
+                double theta_min = Math.asin(1/M1)*180/Math.PI;
+                if (theta<theta_min){
+                    ShowToast("Shock angle must be greater than min shock angle "+String.format("%1$,.9f", theta_min));
                     return;
                 }
                 obliqueShock.CalcFromM1theta(M1, theta);
@@ -817,9 +834,15 @@ public class MainActivity extends FragmentActivity
                 R.id.atmosphere_rho_outputm, R.id.atmosphere_mu_outputm, R.id.atmosphere_a_outputm};
         int labelsr[] = {R.id.atmosphere_P_ratio_output, R.id.atmosphere_T_ratio_output,R.id.atmosphere_rho_ratio_output};
         int titles[]={R.id.atmosphere_english_label , R.id.atmosphere_metric_label, R.id.atmosphere_ratio_label};
+
         String title_string[]=getResources().getStringArray(R.array.atmosphere_title_array);
         String prefixes[] = getResources().getStringArray(R.array.atmosphere_array);
         String prefixes_r[] = getResources().getStringArray(R.array.atmosphere_ratio_array);
+
+        String [] suffix = {"ft", "psf", "R", "lb/ft^3", "lb s/ft^2","ft/s"};
+        String [] suffixm = {"m", "Pa", "K", "kg/m^3", "Pa s","m/s"};
+        String [] suffixr = {"", "", ""};
+
 
         Double input;
 
@@ -833,6 +856,11 @@ public class MainActivity extends FragmentActivity
         double rho_sl=0.0023769;
         double T_sl=518.67;
         double mu_sl=3.737e-7;
+
+        double P_cut=2527;
+        double rho_cut=0.002744;
+        double T_cut=536.47;
+        double mu_cut=3.83587e-7;
 
         try{
             radio_h = (RadioButton) findViewById(R.id.radio_atmosphere_h);
@@ -852,11 +880,14 @@ public class MainActivity extends FragmentActivity
 
                 input=h_multiply[index]*input;
 
-                if (input<-500){
-                    ShowToast("Height input cannot be less than zero.");
+                if (input<-5000){
+                    ShowToast("Input height too low");
                     return;
                 }
                 else {
+                    if (input>160000){
+                        ShowToast("Warning: input altitude is higher than upper stratosphere, results may be invalid.");
+                    }
                     atmos.CalculateFromHeight(input);
                 }
             }
@@ -871,14 +902,16 @@ public class MainActivity extends FragmentActivity
 
                 input=p_multiply[index]*input;
 
-                if(input>P_sl*1.05) {
-                    ShowToast("Pressure input must be less than sea level standard");
+                if(input>P_cut) {
+                    ShowToast("Pressure input not attainable in the standard atmosphere");
                     return;
                 } else if (input <= 0 ) {
                     ShowToast("Pressure must be greater than 0 (vacuum)");
-                    return;
                 }
                 else{
+                    if (input<24){
+                        ShowToast("Warning: input pressure is near vacuum, results may be invalid");
+                    }
                     atmos.P_to_h(input);
                 }
             }
@@ -893,12 +926,8 @@ public class MainActivity extends FragmentActivity
                 input=Double.parseDouble(text.getText().toString().trim());
                 input=t_multiply[index]*(input-t_subtract[index]);
 
-                if (input<.75189*T_sl){
-                    ShowToast("Temperature not 1 to 1 for this value");
-                    return;
-                }
-                else if(input > T_sl*1.05){
-                    ShowToast("Temperature must be less than sea level standard");
+                if (input<.75189*T_sl || input>T_cut){
+                    ShowToast("Input temperature not attainable in the standard atmosphere");
                     return;
                 }
                 else{
@@ -916,14 +945,17 @@ public class MainActivity extends FragmentActivity
                 input=Double.parseDouble(text.getText().toString().trim());
                 input=density_multiply[index]*input;
 
-                if(input>rho_sl*1.05) {
-                    ShowToast("Density input must be less than sea level standard");
+                if(input>rho_cut) {
+                    ShowToast("Density input not attainable in the standard atmosphere");
                     return;
                 } else if (input <= 0 ) {
                     ShowToast("Density must be greater than 0");
                     return;
                 }
                 else{
+                    if (input<1e-6){
+                        ShowToast("Warning: input density is near vacuum, results may be invalid");
+                    }
                     atmos.rho_to_h(input);
                 }
             }
@@ -937,12 +969,12 @@ public class MainActivity extends FragmentActivity
                 input=Double.parseDouble(text.getText().toString().trim());
                 input=viscosity_multiply[index]*input;
 
-                if(input>mu_sl*1.05) {
-                    ShowToast("Viscosity must be less than sea level standard");
+                if(input>mu_cut) {
+                    ShowToast("Viscosity not attainable in the standard atmosphere");
                     return;
                 }
                 else if (input < 2.9689e-7 ) {
-                    ShowToast("Viscosity input not attainable in standard atmosphere");
+                    ShowToast("Viscosity input not attainable in the standard atmosphere");
                     return;
                 }
                 else{
@@ -965,9 +997,6 @@ public class MainActivity extends FragmentActivity
             ShowToast("Elevation too low"+values[0]);
             return;
         }
-        String [] suffix = {"ft", "psf", "R", "lb/ft^3", "lb s/ft^2","ft/s"};
-        String [] suffixm = {"m", "Pa", "K", "kg/m^3", "Pa s","m/s"};
-        String [] suffixr = {"", "", ""};
 
         AtmosphereSetMessage(prefixes, suffix, labels, values, titles[0], title_string[0]);
         AtmosphereSetMessage(prefixes, suffixm, labelsm, valuesm, titles[1], title_string[1]);
@@ -982,12 +1011,20 @@ public class MainActivity extends FragmentActivity
         CurrentTextView.setText(title_string);
 
         for(int i=0;i<labels.length;i++) {
-            if (i==4){
-                message = prefixes[i] + ": " + String.format("%6.3e", values[i]) +" "+ suffixes[i];
+
+            if ((values[i]<1e-4 || values[i]>1e6) && values[i]>0) {
+                message = prefixes[i] + ": " + String.format("%8.5e", values[i]) +" "+ suffixes[i];
             }
-            else {
-                message = prefixes[i] + ": " + String.format("%1$,.6f", values[i]) +" "+ suffixes[i];
+            else{
+                message = prefixes[i] + ": " + String.format("%1$,.9f", values[i]) +" "+ suffixes[i];
             }
+
+//            if (i==4){
+//                message = prefixes[i] + ": " + String.format("%6.3e", values[i]) +" "+ suffixes[i];
+//            }
+//            else {
+//                message = prefixes[i] + ": " + String.format("%1$,.6f", values[i]) +" "+ suffixes[i];
+//            }
             CurrentTextView = (TextView) findViewById(labels[i]);
             CurrentTextView.setText(message);
         }

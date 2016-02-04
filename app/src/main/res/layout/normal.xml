@@ -238,13 +238,6 @@ limitations under the License.
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/normal_label"
-                    android:textSize="16sp"
-                    android:paddingBottom="8dp"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/normal_m1_output"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"

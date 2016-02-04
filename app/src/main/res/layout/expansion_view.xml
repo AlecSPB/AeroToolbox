@@ -139,7 +139,7 @@ limitations under the License.
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#F00000"
+
             android:text="Toggle Inputs"
             android:id="@+id/expansion_toggle"
             android:onClick="ExpansionToggle"

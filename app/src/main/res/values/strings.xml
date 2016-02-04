@@ -26,10 +26,9 @@
     <string name="t21_static_ratio">T2/T1</string>
     <string name="p21_total_ratio">Pt2/Pt1</string>
     <string name="p21_static_ratio">P2/P1</string>
-    <string name="p21_ts_ratio">Pt2/Pt1</string>
+    <string name="p21_ts_ratio">Pt2/P1</string>
     <string name="v21_ratio">V2/V1</string>
-    <string name="rho12_ratio">\u03C11/\u03C12</string>
-
+    <string name="rho12_ratio">\u03C12/\u03C11</string>
 
     <string-array name="normal_array">
         <item name="Mach1">M1</item>
@@ -38,7 +37,7 @@
         <item name="p21_total_ratio">Pt2/Pt1</item>
         <item name="p21_ts_ratio">Pt2/P1</item>
         <item name="t21_static_ratio">T2/T1</item>
-        <item name="v21_ratio">\u03C11/\u03C12,V2/V1</item>
+        <item name="v21_ratio">\u03C12/\u03C11,V1/V2</item>
     </string-array>
 
     <string-array name="atmosphere_title_array">
@@ -59,7 +58,7 @@
     <string-array name="atmosphere_ratio_array">
         <item name="pressure_ratio">p ratio</item>
         <item name="temperature_ratio">T ratio</item>
-        <item name="density_ratio">rho ratio</item>
+        <item name="density_ratio">\u03C1 ratio</item>
     </string-array>
 
 
